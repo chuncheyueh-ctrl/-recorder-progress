@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Battle 排笛等級系統｜多校進階版</title>
+<style>
+:root{
+  --bg:#fff8ef; --card:#ffffff; --ink:#2d241f; --muted:#7d6b60; --line:#ead9c8;
+  --brand:#c47a3c; --brand2:#f1b15f; --green:#6aa66a; --blue:#5c8dc7; --red:#d26b6b;
+  --shadow:0 10px 28px rgba(96,57,24,.14); --radius:22px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:linear-gradient(180deg,#fff8ef,#f8eadb 60%,#fff8ef);color:var(--ink)}
+header{position:sticky;top:0;z-index:10;background:rgba(255,248,239,.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px max(16px,env(safe-area-inset-left)) 12px}
+.header-inner{max-width:1220px;margin:auto;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#3b2a22,#c47a3c);color:white;display:grid;place-items:center;font-size:26px;box-shadow:var(--shadow)}
+h1{font-size:20px;margin:0;line-height:1.2}.sub{font-size:12px;color:var(--muted);margin-top:3px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+button,.btn{border:0;border-radius:999px;padding:10px 14px;font-weight:800;background:#efe1d3;color:var(--ink);cursor:pointer;font-size:14px;touch-action:manipulation}
+button.active,button.primary{background:var(--brand);color:white}button.good{background:var(--green);color:white}button.warn{background:#b55;color:white}button.blue{background:var(--blue);color:white}button:active{transform:translateY(1px)}
+main{max-width:1220px;margin:18px auto 60px;padding:0 16px}
+.grid{display:grid;grid-template-columns:380px 1fr;gap:18px}.dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.dash-grid{grid-template-columns:1fr}.tabs button{font-size:13px;padding:9px 12px}}
+.card{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}.card h2{margin:0 0 14px;font-size:18px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}input,select,textarea{width:100%;border:1px solid var(--line);background:white;border-radius:14px;padding:12px 13px;font-size:16px;color:var(--ink)}
+label{display:block;font-size:13px;color:var(--muted);font-weight:800;margin:12px 0 6px}.small{font-size:12px;color:var(--muted);line-height:1.5}.hidden{display:none!important}hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}@media(max-width:650px){.two,.three{grid-template-columns:1fr}}
+.student-list{display:flex;flex-direction:column;gap:10px;max-height:54vh;overflow:auto;padding-right:2px}.student-item{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:18px;background:#fffaf5;cursor:pointer}.student-item.selected{outline:3px solid rgba(196,122,60,.25);border-color:var(--brand)}
+.avatar{width:48px;height:48px;border-radius:18px;background:#ead5c4;object-fit:cover;display:grid;place-items:center;font-weight:900;color:#7a4a2b;flex:0 0 auto;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.name{font-weight:900}.meta{font-size:12px;color:var(--muted);margin-top:2px}.level-pill{margin-left:auto;background:#3b2a22;color:white;border-radius:999px;padding:6px 9px;font-weight:900}
+.progress{height:18px;border-radius:999px;background:#ecdccc;overflow:hidden;border:1px solid #e3ceb8}.bar{height:100%;background:linear-gradient(90deg,var(--brand2),var(--brand));width:0%;transition:.25s}.big-level{font-size:52px;font-weight:1000;letter-spacing:-2px;margin:4px 0}.stage{font-weight:900;color:var(--brand);font-size:18px}
+.objectives{display:grid;gap:8px;margin-top:10px}.obj{padding:10px 12px;border-radius:14px;background:#fff7ef;border:1px dashed #dec3a7;font-size:15px}.reward{margin-top:12px;padding:14px;border-radius:18px;background:linear-gradient(135deg,#fff1c9,#fff7ec);border:1px solid #f0d49c;font-weight:900}.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.stat{padding:16px;border-radius:20px;background:#fff7ef;border:1px solid var(--line)}.stat .num{font-size:30px;font-weight:1000}.stat .cap{font-size:13px;color:var(--muted);font-weight:800}
+.rank-list{display:grid;gap:8px}.rank{display:flex;align-items:center;gap:10px;padding:10px;border-radius:16px;background:#fffaf5;border:1px solid var(--line)}.medal{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#efe1d3;font-weight:1000}.rank:first-child .medal{background:#ffe69b}.rank:nth-child(2) .medal{background:#e4e4e4}.rank:nth-child(3) .medal{background:#e6bd91}
+.manage-row{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin-bottom:8px}.manage-row input{padding:10px}
+.student-page{min-height:70vh;display:grid;place-items:center;text-align:center}.student-hero{width:min(720px,100%);padding:28px;border-radius:32px;background:rgba(255,255,255,.9);border:1px solid var(--line);box-shadow:var(--shadow)}.student-avatar{width:138px;height:138px;border-radius:42px;background:#ead5c4;margin:0 auto 14px;object-fit:cover;display:grid;place-items:center;font-size:54px;font-weight:1000;color:#7a4a2b;overflow:hidden}.student-avatar img{width:100%;height:100%;object-fit:cover}.level-ring{margin:18px auto 8px;width:190px;height:190px;border-radius:50%;background:conic-gradient(var(--brand) var(--pct),#ead9c8 0);display:grid;place-items:center}.level-ring-inner{width:150px;height:150px;border-radius:50%;background:#fff8ef;display:grid;place-items:center}.level-ring-inner div:first-child{font-size:44px;font-weight:1000}.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}.badge{border-radius:999px;background:#efe1d3;padding:8px 12px;font-weight:800;font-size:13px}.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#2d241f;color:white;padding:12px 16px;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:99}.toast.show{opacity:1}
+
+.map-wrap{overflow:auto;padding:8px;border-radius:22px;background:#fffaf5;border:1px solid var(--line)}
+.board{
+  min-width:760px;
+  display:grid;
+  grid-template-columns:repeat(10,74px);
+  gap:10px;
+  padding:12px;
+}
+.tile{
+  position:relative;
+  min-height:74px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff,#fff5e8);
+  border:1px solid #ead9c8;
+  padding:7px;
+  box-shadow:0 4px 10px rgba(96,57,24,.08);
+}
+.tile .lv{font-size:12px;font-weight:1000;color:#7d6b60}
+.tile .count{font-size:22px;font-weight:1000;margin-top:4px}
+.tile.active{outline:3px solid rgba(196,122,60,.25);background:linear-gradient(180deg,#fff0c7,#fff8ef)}
+.tokens{display:flex;flex-wrap:wrap;gap:2px;margin-top:5px}
+.token{
+  width:15px;height:15px;border-radius:50%;
+  background:var(--brand);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18)
+}
+.token:nth-child(3n){background:var(--blue)}
+.token:nth-child(3n+1){background:var(--green)}
+.token.more{width:auto;border-radius:999px;padding:0 5px;background:#3b2a22;color:white;font-size:10px;font-weight:900}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.legend span{padding:8px 10px;border-radius:999px;background:#efe1d3;font-size:12px;font-weight:800}
+.analysis-table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.analysis-table th{font-size:12px;text-align:left;color:var(--muted);padding:0 10px}
+.analysis-table td{background:#fffaf5;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;font-weight:800}
+.analysis-table td:first-child{border-left:1px solid var(--line);border-radius:14px 0 0 14px}
+.analysis-table td:last-child{border-right:1px solid var(--line);border-radius:0 14px 14px 0}
+.level-band{padding:6px 9px;border-radius:999px;background:#efe1d3;display:inline-block;font-size:12px}
+.band-low{background:#ffe1dc}.band-mid{background:#fff0c7}.band-good{background:#dff0df}.band-high{background:#dceafd}
+
+
+.cloud-status{
+  display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 12px;
+  background:#efe1d3;font-size:12px;font-weight:900;color:var(--ink)
+}
+.dot{width:10px;height:10px;border-radius:50%;background:#b55}
+.dot.on{background:#6aa66a}.dot.sync{background:#f1b15f}
+.codebox{
+  width:100%;min-height:160px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  font-size:13px;white-space:pre;overflow:auto;background:#2d241f;color:#fff8ef;border-radius:16px;padding:12px
+}
+.step{
+  padding:12px;border:1px solid var(--line);border-radius:16px;background:#fffaf5;margin-bottom:10px
+}
+.step b{color:var(--brand)}
+
+
+.calendar-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:8px;
+}
+.day-name{font-size:12px;color:var(--muted);font-weight:900;text-align:center;padding:6px}
+.day-cell{
+  min-height:112px;background:#fffaf5;border:1px solid var(--line);border-radius:16px;padding:8px;
+}
+.day-cell.today{outline:3px solid rgba(196,122,60,.28)}
+.day-num{font-weight:1000;font-size:13px;color:var(--muted)}
+.event-chip{
+  margin-top:5px;padding:5px 7px;border-radius:10px;background:#efe1d3;font-size:12px;font-weight:800;cursor:pointer;
+}
+.event-exam{background:#ffe1dc}.event-concert{background:#dceafd}.event-school{background:#dff0df}.event-other{background:#fff0c7}
+.log-list,.course-list{display:grid;gap:10px}
+.log-card,.course-card{
+  padding:12px;border:1px solid var(--line);border-radius:18px;background:#fffaf5;
+}
+.log-title,.course-title{font-weight:1000;font-size:16px}
+.log-meta,.course-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.log-body,.course-body{white-space:pre-wrap;margin-top:8px;line-height:1.55}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.section-title{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+}
+@media(max-width:700px){
+  .calendar-grid{grid-template-columns:repeat(7, minmax(42px,1fr));gap:4px}
+  .day-cell{min-height:86px;padding:5px;border-radius:12px}
+  .event-chip{font-size:10px;padding:4px 5px}
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo">🐶</div>
+      <div><h1>Battle 排笛等級系統</h1><div class="sub">多校／年級管理｜排行榜｜學生頁｜Lv.1–最高級</div></div>
+    </div>
+    <div class="tabs">
+      <select id="mainMenu" onchange="setView(this.value)" style="width:auto;min-width:190px;border-radius:999px;padding:10px 14px;font-weight:900">
+        <option value="teacher">等級管理後台</option>
+        <option value="student">學生個人頁</option>
+        <option value="overview">總覽地圖 / 分析</option>
+        <option value="calendar">行事曆</option>
+        <option value="lessonLog">上課紀錄</option>
+        <option value="coursePlan">學年課程總覽</option>
+        <option value="manage">學校 / 年級選單</option>
+        <option value="levels">等級目標管理</option>
+        <option value="cloud">雲端同步</option>
+      </select>
+      <button onclick="forceRefresh()">重新整理</button>
+      <button onclick="exportData()">匯出備份</button>
+      <label class="btn" for="importFile">匯入</label>
+      <input id="importFile" type="file" accept="application/json" class="hidden" onchange="importData(event)">
+    </div>
+  </div>
+</header>
+
+<main>
+
+
+
+<section id="calendarView" class="hidden">
+  <div class="card" style="margin-bottom:14px">
+    <div class="section-title">
+      <h2>行事曆</h2>
+      <div class="toolbar">
+        <button onclick="changeMonth(-1)">上一月</button>
+        <button onclick="goToday()">回到本月</button>
+        <button onclick="changeMonth(1)">下一月</button>
+      </div>
+    </div>
+    <div class="three">
+      <div><label>學校</label><select id="calendarSchool" onchange="setCalendarSchool(this.value)"></select></div>
+      <div><label>月份</label><input id="calendarMonth" type="month" onchange="setCalendarMonth(this.value)"></div>
+      <div><label>顯示</label><select id="calendarScope" onchange="setCalendarScope(this.value)">
+        <option value="school">目前學校</option>
+        <option value="all">全部學校</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>新增 / 修改行事曆事件</h2>
+      <input id="eventId" type="hidden">
+      <label>日期</label><input id="eventDate" type="date">
+      <label>學校</label><select id="eventSchool"></select>
+      <label>類型</label><select id="eventType">
+        <option value="exam">考試</option>
+        <option value="concert">演出 / 活動</option>
+        <option value="school">學校行事</option>
+        <option value="other">其他</option>
+      </select>
+      <label>標題</label><input id="eventTitle" placeholder="例如：期中考、期末考、畢業典禮">
+      <label>備註</label><textarea id="eventNotes" rows="4" placeholder="補充說明，可自由修改"></textarea>
+      <div class="controls">
+        <button class="primary" onclick="saveEvent()">儲存事件</button>
+        <button onclick="clearEventForm()">清空</button>
+        <button class="warn" onclick="deleteEvent()">刪除事件</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="calendarTitle">月份行事曆</h2>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+  </div>
+</section>
+
+<section id="lessonLogView" class="hidden">
+  <div class="card" style="margin-bottom:14px">
+    <div class="section-title">
+      <h2>上課紀錄</h2>
+      <div class="toolbar">
+        <button class="primary" onclick="newLessonLog()">新增一筆紀錄</button>
+      </div>
+    </div>
+    <div class="three">
+      <div><label>學校</label><select id="logFilterSchool" onchange="setLogFilter('schoolId',this.value)"></select></div>
+      <div><label>年級 / 班級</label><select id="logFilterGrade" onchange="setLogFilter('gradeId',this.value)"></select></div>
+      <div><label>顯示範圍</label><select id="logScope" onchange="setLogScope(this.value)">
+        <option value="class">目前班級</option>
+        <option value="school">目前學校</option>
+        <option value="all">全部</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>輸入 / 修改這節課上了什麼</h2>
+      <input id="logId" type="hidden">
+      <div class="two">
+        <div><label>日期</label><input id="logDate" type="date"></div>
+        <div><label>課次 / 標題</label><input id="logTitle" placeholder="例如：第3週｜CDE音符與長音"></div>
+      </div>
+      <div class="two">
+        <div><label>學校</label><select id="logSchool"></select></div>
+        <div><label>年級 / 班級</label><select id="logGrade"></select></div>
+      </div>
+      <label>本節內容</label>
+      <textarea id="logContent" rows="7" placeholder="例如：今天複習長音5秒、練習Do-Re-Mi，加入四分音符拍手，最後做Lv.6升級測驗。"></textarea>
+      <label>下次提醒 / 作業</label>
+      <textarea id="logNext" rows="4" placeholder="例如：下次檢查CDE辨認與Do-Re換音。"></textarea>
+      <div class="controls">
+        <button class="primary" onclick="saveLessonLog()">儲存紀錄</button>
+        <button onclick="clearLessonLogForm()">清空</button>
+        <button class="warn" onclick="deleteLessonLog()">刪除紀錄</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>紀錄列表</h2>
+      <div id="lessonLogList" class="log-list"></div>
+    </div>
+  </div>
+</section>
+
+
+<section id="coursePlanView" class="hidden">
+  <div class="card" style="margin-bottom:14px">
+    <div class="section-title">
+      <h2>學年課程總覽</h2>
+      <div class="toolbar">
+        <button class="primary" onclick="newCoursePlan()">新增課程週次</button>
+        <button onclick="generateDefaultCoursePlan()">為目前班級產生20週範本</button>
+        <button onclick="copyCoursePlanFromOtherClass()">從其他班複製課程</button>
+      </div>
+    </div>
+    <p class="small">每間學校、每個年級／班級都有獨立課程總覽，不會共用同一套課程表。</p>
+    <div class="three">
+      <div><label>學校</label><select id="courseFilterSchool" onchange="setCourseFilter('schoolId',this.value)"></select></div>
+      <div><label>年級 / 班級</label><select id="courseFilterGrade" onchange="setCourseFilter('gradeId',this.value)"></select></div>
+      <div><label>目前課程數</label><div class="stat" style="padding:12px"><div class="num" id="courseCount" style="font-size:24px">0</div><div class="cap">筆週次</div></div></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>編輯課程週次</h2>
+      <input id="courseId" type="hidden">
+      <div class="two">
+        <div><label>所屬學校</label><select id="courseSchool"></select></div>
+        <div><label>年級 / 班級</label><select id="courseGrade"></select></div>
+      </div>
+      <div class="two">
+        <div><label>週次 / 單元</label><input id="courseWeek" placeholder="例如：第1週"></div>
+        <div><label>對應等級</label><input id="courseLevelRange" placeholder="例如：Lv.1–3"></div>
+      </div>
+      <label>主題</label><input id="courseTitle" placeholder="例如：吹出聲音與高低音感知">
+      <label>課程目標</label><textarea id="courseGoals" rows="4" placeholder="每行一個目標"></textarea>
+      <label>活動流程 / 備註</label><textarea id="courseActivities" rows="6" placeholder="可輸入本週活動、測驗、任務卡等"></textarea>
+      <div class="controls">
+        <button class="primary" onclick="saveCoursePlan()">儲存週次</button>
+        <button onclick="clearCoursePlanForm()">清空</button>
+        <button class="warn" onclick="deleteCoursePlan()">刪除週次</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 id="courseListTitle">全年課程列表</h2>
+      <div id="coursePlanList" class="course-list"></div>
+    </div>
+  </div>
+</section>
+
+<section id="cloudView" class="hidden">
+  <div class="card" style="margin-bottom:14px">
+    <h2>雲端同步狀態</h2>
+    <div class="row">
+      <div class="cloud-status"><span id="cloudDot" class="dot"></span><span id="cloudStatusText">尚未連線</span></div>
+      <button class="blue" onclick="manualCloudSave()">手動上傳雲端</button>
+      <button class="good" onclick="manualCloudLoad()">從雲端讀取</button>
+      <button onclick="disconnectCloud()">停止雲端同步</button>
+    </div>
+    <p class="small">目前一定會先存在本機 Safari。若未設定 Firebase，就是「本機版」；設定 Firebase 後，才會同步到雲端。</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Firebase 設定</h2>
+      <p class="small">請把 Firebase 網頁設定貼在右邊。你只需要設定一次；之後會自動儲存在本機。</p>
+
+      <label>資料庫路徑名稱</label>
+      <input id="cloudDocId" placeholder="例如 battle-panflute-main" value="battle-panflute-main">
+
+      <label>貼上 Firebase config</label>
+      <textarea id="firebaseConfigText" rows="10" placeholder='貼上類似：
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};'></textarea>
+
+      <div class="controls">
+        <button class="primary" onclick="saveFirebaseConfig()">儲存設定並連線</button>
+        <button onclick="fillConfigExample()">填入格式範例</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>設定步驟</h2>
+      <div class="step"><b>1.</b> 到 Firebase 建立專案。</div>
+      <div class="step"><b>2.</b> 建立 Firestore Database，模式可先選測試模式。</div>
+      <div class="step"><b>3.</b> 專案設定 → 你的應用程式 → 新增 Web App。</div>
+      <div class="step"><b>4.</b> 複製 firebaseConfig，貼回左邊。</div>
+      <div class="step"><b>5.</b> 按「儲存設定並連線」。</div>
+      <p class="small">提醒：測試模式有期限，正式長期使用時要調整 Firestore Rules。這版不做公開學生登入，只作老師使用的雲端同步。</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>建議 Firestore Rules（老師自用測試版）</h2>
+    <p class="small">如果只是你自己先測試，可以先用 Firebase 預設測試模式。正式公開前，不建議長期使用開放規則。</p>
+    <pre class="codebox">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /battlePanflute/{docId} {
+      allow read, write: if true;
+    }
+  }
+}</pre>
+  </div>
+</section>
+
+<section id="overviewView" class="hidden">
+  <div class="card" style="margin-bottom:14px">
+    <h2>總覽篩選</h2>
+    <div class="three">
+      <div><label>學校</label><select id="overviewSchool" onchange="setOverviewFilter('schoolId',this.value)"></select></div>
+      <div><label>年級 / 班級</label><select id="overviewGrade" onchange="setOverviewFilter('gradeId',this.value)"></select></div>
+      <div><label>顯示範圍</label><select id="overviewScope" onchange="setOverviewScope(this.value)">
+        <option value="class">目前班級</option>
+        <option value="school">整間學校</option>
+        <option value="all">全部學校</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="dash-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="num" id="overviewCount">0</div><div class="cap">學生總數</div></div>
+    <div class="stat"><div class="num" id="overviewAvg">0</div><div class="cap">平均等級</div></div>
+    <div class="stat"><div class="num" id="overviewBand">-</div><div class="cap">整體能力水準</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px">
+    <h2>大富翁式等級地圖</h2>
+    <p class="small">每一格代表一個等級；圓點代表學生分布。小朋友可以很直覺看到大家目前在哪些關卡。</p>
+    <div class="map-wrap"><div id="levelBoard" class="board"></div></div>
+    <div class="legend"><span>🟤 每個圓點＝1位學生</span><span>黑色數字＝該級超過6人</span><span>點擊格子可查看名單</span></div>
+    <div id="tileDetail" class="reward" style="display:none"></div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>學校平均值分析</h2>
+      <table class="analysis-table">
+        <thead><tr><th>學校</th><th>學生數</th><th>平均</th><th>水準</th></tr></thead>
+        <tbody id="schoolAnalysis"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h2>年級 / 班級平均值分析</h2>
+      <table class="analysis-table">
+        <thead><tr><th>學校 / 年級</th><th>學生數</th><th>平均</th><th>水準</th></tr></thead>
+        <tbody id="gradeAnalysis"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>能力分佈分析</h2>
+    <table class="analysis-table">
+      <thead><tr><th>能力區間</th><th>人數</th><th>比例</th><th>教學提醒</th></tr></thead>
+      <tbody id="bandAnalysis"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="teacherView">
+  <div class="card" style="margin-bottom:14px">
+    <h2>班級篩選 <span style="font-size:12px;color:#c47a3c">V3 等級顯示同步版</span></h2>
+    <div class="three">
+      <div><label>學校</label><select id="filterSchool" onchange="setFilter('schoolId',this.value)"></select></div>
+      <div><label>年級 / 班級</label><select id="filterGrade" onchange="setFilter('gradeId',this.value)"></select></div>
+      <div><label>快速檢視</label><button class="blue" style="width:100%;border-radius:14px;padding:13px" onclick="selectTopStudent()">選排行榜第一名</button></div>
+    </div>
+  </div>
+
+  <div class="dash-grid" style="margin-bottom:14px">
+    <div class="stat"><div class="num" id="statCount">0</div><div class="cap">目前班級學生數</div></div>
+    <div class="stat"><div class="num" id="statAvg">0</div><div class="cap">班級平均等級</div></div>
+    <div class="stat"><div class="num" id="statMax">0</div><div class="cap">班級最高等級</div></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>新增學生</h2>
+        <div class="two">
+          <div><label>姓名</label><input id="newName" placeholder="輸入學生姓名"></div>
+          <div><label>初始等級</label><input id="newLevel" type="number" min="1" value="1"></div>
+        </div>
+        <button class="primary" style="width:100%;margin-top:12px;border-radius:14px;padding:13px" onclick="addStudent()">新增到目前班級</button>
+        <p class="small">新增學生會放入目前選擇的「學校／年級」。</p>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h2>學生名單</h2>
+        <div id="studentList" class="student-list"></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h2>排行榜</h2>
+        <div id="rankList" class="rank-list"></div>
+      </div>
+    </div>
+
+    <div class="card" id="editorCard">
+      <h2>學生資料與等級調整</h2>
+      <div id="emptyEditor" class="small">請先新增或選擇一位學生。</div>
+      <div id="editor" class="hidden">
+        <div class="two">
+          <div><label>姓名</label><input id="editName" oninput="updateSelected('name',this.value)"></div>
+          <div><label>目前等級 Lv.1–最高級</label><input id="editLevel" type="number" min="1" oninput="setLevelManual(this.value)"></div>
+        </div>
+        <div class="two">
+          <div><label>所屬學校</label><select id="editSchool" onchange="updateSelected('schoolId',this.value)"></select></div>
+          <div><label>年級 / 班級</label><select id="editGrade" onchange="updateSelected('gradeId',this.value)"></select></div>
+        </div>
+
+        <label>學生照片 / 頭像</label>
+        <input id="photoInput" type="file" accept="image/*" onchange="loadPhoto(event)">
+        <p class="small">照片會壓縮後存進目前瀏覽器。換裝置請用匯出／匯入。</p>
+
+        <hr>
+        <div class="row">
+          <div id="editAvatar" class="avatar"></div>
+          <div style="flex:1;min-width:220px">
+            <div class="stage" id="stageName"></div>
+            <div class="big-level" id="bigLevel"></div>
+            <div class="progress"><div class="bar" id="levelBar"></div></div>
+            <div class="small" id="levelPercent"></div>
+          </div>
+        </div>
+        <div class="controls">
+          <button onclick="changeLevel(-1)">－1級</button>
+          <button class="good" onclick="changeLevel(1)">＋1級</button>
+          <button class="blue" onclick="changeLevel(5)">＋5級</button>
+          <button onclick="resetPhoto()">移除照片</button>
+          <button class="warn" onclick="deleteSelected()">刪除學生</button>
+        </div>
+        <hr>
+        <h2>本級升級目標</h2>
+        <div id="objectives" class="objectives"></div>
+        <div id="reward" class="reward"></div>
+        <label>老師備註</label>
+        <textarea id="notes" rows="4" placeholder="例如：氣息穩定，但換音還要慢一點。" oninput="updateSelected('notes',this.value)"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="studentView" class="hidden">
+  <div class="card" style="margin-bottom:14px">
+    <div class="three">
+      <div><label>學校</label><select id="studentSchool" onchange="setFilter('schoolId',this.value)"></select></div>
+      <div><label>年級 / 班級</label><select id="studentGrade" onchange="setFilter('gradeId',this.value)"></select></div>
+      <div><label>選擇學生</label><select id="studentSelect" onchange="selectStudent(this.value)"></select></div>
+    </div>
+    <div class="row" style="margin-top:12px"><button onclick="window.print()">列印 / 存成PDF</button></div>
+  </div>
+  <div class="student-page">
+    <div class="student-hero">
+      <div id="studentAvatar" class="student-avatar"></div>
+      <h1 id="studentName" style="font-size:32px"></h1>
+      <div class="stage" id="studentStage"></div>
+      <div class="level-ring" id="levelRing"><div class="level-ring-inner"><div id="studentLevel"></div><div class="small">目前等級</div></div></div>
+      <div class="progress"><div class="bar" id="studentBar"></div></div>
+      <div class="badges"><div class="badge" id="studentReward"></div><div class="badge" id="nextReward"></div></div>
+      <hr><h2>下一步任務</h2>
+      <div id="studentObjectives" class="objectives" style="text-align:left"></div>
+      <p class="small" id="studentNotes"></p>
+    </div>
+  </div>
+</section>
+
+
+<section id="levelsView" class="hidden">
+  <div class="grid">
+    <div class="card">
+      <h2>等級清單</h2>
+      <p class="small">可自行修改每一級的階段名稱、獎勵與升級目標。新增等級會加在最後；刪除只會刪除最後一級，避免學生資料混亂。</p>
+      <div class="controls">
+        <button class="primary" onclick="addLevel()">＋新增一級</button>
+        <button class="warn" onclick="deleteLastLevel()">刪除最後一級</button>
+        <button onclick="resetLevelsConfirm()">恢復預設50級</button>
+      </div>
+      <hr>
+      <div id="levelManageList" class="student-list" style="max-height:70vh"></div>
+    </div>
+
+    <div class="card">
+      <h2>編輯等級內容</h2>
+      <div id="levelEditorEmpty" class="small">請從左側選擇一個等級。</div>
+      <div id="levelEditor" class="hidden">
+        <label>等級</label>
+        <input id="levelEditNumber" disabled>
+
+        <label>階段名稱</label>
+        <input id="levelEditStage" oninput="updateLevelField('stage',this.value)" placeholder="例如：啟動期">
+
+        <label>獎勵 / 稱號</label>
+        <input id="levelEditReward" oninput="updateLevelField('reward',this.value)" placeholder="例如：第一口氣貼紙">
+
+        <label>升級目標（每行一個）</label>
+        <textarea id="levelEditGoals" rows="7" oninput="updateLevelGoals(this.value)" placeholder="每行輸入一個目標"></textarea>
+
+        <div class="controls">
+          <button onclick="addGoalToLevel()">＋增加目標</button>
+          <button onclick="removeLastGoalFromLevel()">－刪除最後一個目標</button>
+          <button class="blue" onclick="previewLevelOnStudent()">在學生頁預覽</button>
+        </div>
+
+        <hr>
+        <h2>此級預覽</h2>
+        <div class="stage" id="levelPreviewStage"></div>
+        <div class="big-level" id="levelPreviewNumber"></div>
+        <div id="levelPreviewGoals" class="objectives"></div>
+        <div id="levelPreviewReward" class="reward"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="manageView" class="hidden">
+  <div class="grid">
+    <div class="card">
+      <h2>學校選單管理</h2>
+      <div class="row"><input id="newSchoolName" placeholder="新增學校名稱"><button class="primary" onclick="addSchool()">新增學校</button></div>
+      <hr><div id="schoolManage"></div>
+    </div>
+    <div class="card">
+      <h2>年級 / 班級選單管理</h2>
+      <p class="small">可以命名成「三年級」「四年級」「三甲」「四年級A班」等。</p>
+      <div class="row"><input id="newGradeName" placeholder="新增年級 / 班級名稱"><button class="primary" onclick="addGrade()">新增年級</button></div>
+      <hr><div id="gradeManage"></div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="toast" class="toast"></div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+<script>
+const KEY="battle_panflute_dashboard_cloud_full_v1";
+const CLOUD_KEY="battle_panflute_firebase_config_v1";
+const APP_VERSION="menu-sync-v2";
+const defaultLevels=[
+null,
+{stage:"啟動期",reward:"第一口氣貼紙",goals:["吹出聲音（任一管）","能控制氣流不爆音","知道排笛有高低音"]},
+{stage:"啟動期",reward:"穩定氣息章",goals:["吹穩一個音 2 秒","能再吹一次並重複成功","分辨高音 / 低音"]},
+{stage:"啟動期",reward:"三秒長音章",goals:["吹穩 3 秒","嘗試兩個不同音","能說出哪個比較高"]},
+{stage:"啟動期",reward:"高低音小偵探",goals:["吹兩個不同音高","高低切換不混亂","認識音是往上 / 往下移動"]},
+{stage:"啟動期",reward:"五線譜入門章",goals:["穩定吹出兩個音","能模仿老師音高","認識五線譜的上 / 下位置"]},
+{stage:"基礎音符",reward:"Do 解鎖",goals:["吹出指定音 Do","Do 能維持 3 秒","認識 Do / C 在五線譜的位置"]},
+{stage:"基礎音符",reward:"Re 解鎖",goals:["Do 吹穩且不飄音","可連續 2 次成功","認識 Re / D 的位置與名稱"]},
+{stage:"基礎音符",reward:"雙音連擊",goals:["吹 Do → Re","換音不中斷","能辨別 Do / Re，C / D"]},
+{stage:"基礎音符",reward:"Mi 解鎖",goals:["吹 Do → Re → Do","旋律流暢","認識 Mi / E 的位置"]},
+{stage:"基礎音符",reward:"CDE 小達人",goals:["吹 Do–Re–Mi","中間不停頓","能說出 C D E"]},
+{stage:"基礎旋律",reward:"三音旋律章",goals:["Do–Re–Mi 穩定","能模仿短旋律","能辨認 C / D / E"]},
+{stage:"基礎旋律",reward:"Fa 解鎖",goals:["三音連續不中斷","能自己吹一次","認識 Fa / F"]},
+{stage:"基礎旋律",reward:"跳音挑戰",goals:["吹 Do–Fa 跳音","音準不亂","認識 F 在五線譜的位置"]},
+{stage:"基礎旋律",reward:"CDEF 讀譜章",goals:["吹 Do–Re–Mi–Fa","旋律流暢","能辨認 C D E F"]},
+{stage:"基礎旋律",reward:"四音旋律章",goals:["完成 4 音旋律","不錯音","能寫出或選出 C D E F"]},
+{stage:"節奏入門",reward:"四分音符章",goals:["加入簡單節奏","慢速跟拍成功","認識四分音符"]},
+{stage:"節奏入門",reward:"八分音符章",goals:["吹奏與拍手同步","節奏不混亂","認識八分音符"]},
+{stage:"節奏入門",reward:"Sol 解鎖",goals:["吹簡單節奏旋律","音與節奏正確","認識 Sol / G"]},
+{stage:"節奏入門",reward:"G 音狙擊手",goals:["吹 Do–Sol","音準穩定","能辨認 G"]},
+{stage:"節奏入門",reward:"CDEFG 小隊員",goals:["吹 Do–Re–Mi–Fa–Sol","完整流暢","能說出 C D E F G"]},
+{stage:"控制力",reward:"五秒長音章",goals:["長音穩定 5 秒","音量均勻","認識 La / A"]},
+{stage:"控制力",reward:"A 音解鎖",goals:["吹 Do–La","音準穩定","能辨認 A 在五線譜的位置"]},
+{stage:"控制力",reward:"六音音階章",goals:["吹 C D E F G A","流暢不中斷","能說出 C D E F G A"]},
+{stage:"控制力",reward:"全半音概念章",goals:["長音與節奏結合","穩定不晃","認識全音 / 半音概念"]},
+{stage:"控制力",reward:"指定音獵人",goals:["吹 6 音旋律","不錯音","能從譜上找到 C～A 指定音"]},
+{stage:"完整音階",reward:"Ti 解鎖",goals:["能用調音器檢查音準","能修正偏高 / 偏低","認識 Ti / B"]},
+{stage:"完整音階",reward:"B 音解鎖",goals:["吹完整 C～B 音階","上行下行穩定","能辨認 B"]},
+{stage:"完整音階",reward:"八度概念章",goals:["音階流暢且節奏穩定","不中斷","認識八度與高低 Do"]},
+{stage:"完整音階",reward:"跨音控制章",goals:["吹低音到高音跨音","控制不爆音","理解音階順序"]},
+{stage:"完整音階",reward:"完整音階勇者",goals:["完整吹 Do–Do","穩定且流暢","能寫出 C D E F G A B"]},
+{stage:"讀譜表達",reward:"小節線章",goals:["視譜吹 3 音","不中斷","認識小節線"]},
+{stage:"讀譜表達",reward:"4/4 拍章",goals:["視譜吹 4 音旋律","正確率高","認識 4/4 拍"]},
+{stage:"讀譜表達",reward:"數拍小隊長",goals:["吹 4 小節旋律","穩定完成","能數 1 2 3 4 拍"]},
+{stage:"讀譜表達",reward:"呼吸點章",goals:["能控制呼吸點","換氣不影響旋律","認識休止符"]},
+{stage:"讀譜表達",reward:"3/4 拍章",goals:["吹完整短句含休止","節奏正確","認識 3/4 拍"]},
+{stage:"音樂表情",reward:"速度變化章",goals:["同旋律吹兩種速度","速度改變仍穩定","認識快 / 慢速度概念"]},
+{stage:"音樂表情",reward:"強弱表情章",goals:["加入強弱變化","旋律有表情","認識 p / mf"]},
+{stage:"音樂表情",reward:"節拍器章",goals:["節奏穩定不拖拍","可跟節拍器吹奏","認識節拍器用途"]},
+{stage:"音樂表情",reward:"合奏連結章",goals:["雙人合奏同步","不搶拍","認識合奏與聆聽概念"]},
+{stage:"音樂表情",reward:"完整短曲章",goals:["吹完整短曲","含基本表情","能讀基礎五線譜或簡譜"]},
+{stage:"表演期",reward:"樂句表達章",goals:["能分樂句演奏","旋律有起伏","認識樂句概念"]},
+{stage:"表演期",reward:"詮釋變化章",goals:["同旋律能吹出不同感覺","表情有變化","認識強弱記號"]},
+{stage:"表演期",reward:"穩定演奏章",goals:["音準與節奏穩定","錯誤明顯減少","能自己修正錯誤"]},
+{stage:"表演期",reward:"小舞台章",goals:["完成單人小表演","演奏不中斷","認識舞台禮儀"]},
+{stage:"表演期",reward:"主旋律隊長",goals:["能擔任合奏主旋律","有帶領感","能聽其他聲部"]},
+{stage:"高手期",reward:"音色魔法師",goals:["能吹出柔和 / 明亮音色","音色差異明顯","認識音色概念"]},
+{stage:"高手期",reward:"自主練習章",goals:["能自主練習一段旋律","可示範給老師聽","能在譜上做簡單標記"]},
+{stage:"高手期",reward:"視譜挑戰章",goals:["視譜吹完整旋律","錯誤少","理解音符到聲音的關係"]},
+{stage:"高手期",reward:"完整演出章",goals:["完整演出含表情","全曲不中斷","理解音樂整體內容"]},
+{stage:"最終試煉",reward:"Battle 排笛大師",goals:["完整曲子演奏","音準、節奏、表情皆穩定","能解釋自己在吹什麼音符與節奏"]}
+];
+
+const defaultData={
+  schools:[{id:"s1",name:"學校一"},{id:"s2",name:"學校二"},{id:"s3",name:"學校三"},{id:"s4",name:"學校四"}],
+  grades:[{id:"g3",name:"三年級"},{id:"g4",name:"四年級"}],
+  levels: JSON.parse(JSON.stringify(defaultLevels)),
+  students:[],
+  events:[],
+  lessonLogs:[],
+  coursePlans:[],
+  selectedId:null,
+  selectedLevel:1,
+  filter:{schoolId:"s1",gradeId:"g3"},
+  overview:{schoolId:"s1",gradeId:"g3",scope:"class"},
+  calendar:{schoolId:"s1",scope:"school",month:""},
+  logFilter:{schoolId:"s1",gradeId:"g3",scope:"class"},
+  courseFilter:{schoolId:"s1",gradeId:"g3"}
+};
+let data=loadData();
+let cloud = { enabled:false, db:null, app:null, docRef:null, unsub:null, applyingRemote:false, ready:false };
+let saveTimer=null;
+
+function loadData(){
+  let raw=localStorage.getItem(KEY);
+  if(!raw){
+    // try migrate older v2
+    let old=localStorage.getItem("battle_panflute_dashboard_v3_multi_school") || localStorage.getItem("battle_panflute_dashboard_v2");
+    if(old){
+      try{
+        let o=JSON.parse(old);
+        return {...defaultData, levels:JSON.parse(JSON.stringify(defaultLevels)), students:(o.students||[]).map(s=>({...s,schoolId:"s1",gradeId:"g3"})), selectedId:o.selectedId||null};
+      }catch(e){}
+    }
+    return JSON.parse(JSON.stringify(defaultData));
+  }
+  try{
+    let d=JSON.parse(raw);
+    d.schools=d.schools?.length?d.schools:defaultData.schools;
+    d.grades=d.grades?.length?d.grades:defaultData.grades;
+    d.filter=d.filter||{schoolId:d.schools[0].id,gradeId:d.grades[0].id}; d.overview=d.overview||{schoolId:d.filter.schoolId,gradeId:d.filter.gradeId,scope:"class"};
+    d.levels=d.levels?.length?d.levels:JSON.parse(JSON.stringify(defaultLevels));
+    d.selectedLevel=d.selectedLevel||1;
+    d.students=d.students||[];
+    d.events=d.events||[];
+    d.lessonLogs=d.lessonLogs||[];
+    d.coursePlans=d.coursePlans||[];
+    d.calendar=d.calendar||{schoolId:d.filter.schoolId,scope:"school",month:""};
+    d.logFilter=d.logFilter||{schoolId:d.filter.schoolId,gradeId:d.filter.gradeId,scope:"class"};
+    d.courseFilter=d.courseFilter||{schoolId:d.filter.schoolId,gradeId:d.filter.gradeId};
+    d.students.forEach(s=>s.level=clamp(s.level));
+    return d;
+  }catch(e){return JSON.parse(JSON.stringify(defaultData))}
+}
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+  scheduleCloudSave();
+}
+
+function setCloudStatus(state,text){
+  const dot=document.getElementById("cloudDot"), label=document.getElementById("cloudStatusText");
+  if(!dot||!label)return;
+  dot.className="dot"+(state==="on"?" on":state==="sync"?" sync":"");
+  label.textContent=text;
+}
+function parseFirebaseConfig(text){
+  if(!text) throw new Error("請貼上 Firebase config");
+  let cleaned=text.trim();
+  cleaned=cleaned.replace(/^const\s+firebaseConfig\s*=\s*/,"").replace(/^var\s+firebaseConfig\s*=\s*/,"").replace(/^let\s+firebaseConfig\s*=\s*/,"");
+  cleaned=cleaned.replace(/;$/,"").trim();
+  // Turn JS object into JSON-ish safely by extracting known fields
+  const fields=["apiKey","authDomain","projectId","storageBucket","messagingSenderId","appId","measurementId"];
+  const out={};
+  fields.forEach(k=>{
+    const m=cleaned.match(new RegExp(k+"\\\\s*:\\\\s*[\\\"']([^\\\"']+)[\\\"']"));
+    if(m) out[k]=m[1];
+  });
+  if(!out.apiKey || !out.projectId || !out.appId) throw new Error("Firebase config 格式不完整");
+  return out;
+}
+function loadCloudConfigToForm(){
+  const saved=localStorage.getItem(CLOUD_KEY);
+  if(!saved)return;
+  try{
+    const c=JSON.parse(saved);
+    if(document.getElementById("firebaseConfigText")) document.getElementById("firebaseConfigText").value=c.raw||"";
+    if(document.getElementById("cloudDocId")) document.getElementById("cloudDocId").value=c.docId||"battle-panflute-main";
+  }catch(e){}
+}
+function saveFirebaseConfig(){
+  try{
+    const raw=document.getElementById("firebaseConfigText").value;
+    const docId=(document.getElementById("cloudDocId").value||"battle-panflute-main").trim();
+    const config=parseFirebaseConfig(raw);
+    localStorage.setItem(CLOUD_KEY,JSON.stringify({raw,config,docId}));
+    connectCloud(true);
+  }catch(e){toast(e.message||"設定失敗")}
+}
+function fillConfigExample(){
+  document.getElementById("firebaseConfigText").value=`const firebaseConfig = {
+  apiKey: "你的 apiKey",
+  authDomain: "你的專案.firebaseapp.com",
+  projectId: "你的 projectId",
+  storageBucket: "你的專案.appspot.com",
+  messagingSenderId: "你的 messagingSenderId",
+  appId: "你的 appId"
+};`;
+}
+async function connectCloud(showToast=false){
+  const saved=localStorage.getItem(CLOUD_KEY);
+  if(!saved){setCloudStatus("off","尚未設定雲端");return}
+  try{
+    const c=JSON.parse(saved);
+    if(!window.firebase){setCloudStatus("off","Firebase 套件尚未載入");return}
+    setCloudStatus("sync","連線中…");
+    if(!cloud.app){
+      cloud.app = firebase.apps.length ? firebase.app() : firebase.initializeApp(c.config);
+      cloud.db = firebase.firestore();
+    }
+    cloud.docRef = cloud.db.collection("battlePanflute").doc(c.docId||"battle-panflute-main");
+    cloud.enabled=true; cloud.ready=true;
+    if(cloud.unsub) cloud.unsub();
+    cloud.unsub = cloud.docRef.onSnapshot(snap=>{
+      if(!snap.exists){ setCloudStatus("on","已連線，雲端尚無資料"); return; }
+      const remote=snap.data();
+      if(!remote || !remote.payload)return;
+      const remoteUpdated=remote.updatedAt || 0;
+      const localUpdated=data.updatedAt || 0;
+      if(remoteUpdated > localUpdated){
+        cloud.applyingRemote=true;
+        data=remote.payload;
+        localStorage.setItem(KEY,JSON.stringify(data));
+        cloud.applyingRemote=false;
+        render();
+        setCloudStatus("on","已同步雲端資料");
+      }else{
+        setCloudStatus("on","已連線");
+      }
+    },err=>{
+      console.error(err);
+      setCloudStatus("off","雲端連線失敗");
+      toast("雲端連線失敗，請檢查 Firebase 設定與 Rules");
+    });
+    setCloudStatus("on","已連線");
+    if(showToast)toast("雲端已連線");
+  }catch(e){
+    console.error(e);
+    setCloudStatus("off","雲端設定錯誤");
+    if(showToast)toast("雲端設定錯誤");
+  }
+}
+function scheduleCloudSave(){
+  if(cloud.applyingRemote || !cloud.enabled || !cloud.ready || !cloud.docRef)return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>manualCloudSave(false),900);
+}
+async function manualCloudSave(show=true){
+  if(!cloud.docRef){ await connectCloud(false); }
+  if(!cloud.docRef){ if(show)toast("請先設定雲端"); return; }
+  try{
+    setCloudStatus("sync","上傳中…");
+    data.updatedAt=Date.now();
+    localStorage.setItem(KEY,JSON.stringify(data));
+    await cloud.docRef.set({payload:data,updatedAt:data.updatedAt},{merge:true});
+    setCloudStatus("on","已上傳雲端");
+    if(show)toast("已上傳雲端");
+  }catch(e){
+    console.error(e);
+    setCloudStatus("off","上傳失敗");
+    if(show)toast("上傳失敗，請檢查網路或 Firebase Rules");
+  }
+}
+async function manualCloudLoad(){
+  if(!cloud.docRef){ await connectCloud(false); }
+  if(!cloud.docRef){ toast("請先設定雲端"); return; }
+  try{
+    setCloudStatus("sync","讀取中…");
+    const snap=await cloud.docRef.get();
+    if(!snap.exists || !snap.data().payload){toast("雲端目前沒有資料");setCloudStatus("on","已連線");return}
+    data=snap.data().payload;
+    localStorage.setItem(KEY,JSON.stringify(data));
+    render();
+    setCloudStatus("on","已從雲端讀取");
+    toast("已從雲端讀取");
+  }catch(e){
+    console.error(e);
+    setCloudStatus("off","讀取失敗");
+    toast("讀取失敗，請檢查網路或 Firebase Rules");
+  }
+}
+function disconnectCloud(){
+  if(cloud.unsub) cloud.unsub();
+  cloud={enabled:false, db:null, app:cloud.app, docRef:null, unsub:null, applyingRemote:false, ready:false};
+  setCloudStatus("off","已停止同步");
+  toast("已停止雲端同步");
+}
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)}
+function uid(){return Math.random().toString(36).slice(2)+Date.now().toString(36)}
+function levelsArr(){return (data && data.levels && data.levels.length>1) ? data.levels : defaultLevels}
+function maxLevel(){return Math.max(1, levelsArr().length-1)}
+function clamp(n){return Math.max(1,Math.min(maxLevel(),parseInt(n)||1))}
+function levelInfo(n){
+  const arr=levelsArr();
+  const idx=Math.max(1,Math.min(arr.length-1,parseInt(n)||1));
+  return arr[idx] || arr[1] || {stage:"未設定",reward:"未設定",goals:[]};
+}
+function pct(level){return maxLevel()<=1?100:Math.round((level-1)/(maxLevel()-1)*100)}
+function initials(name){return (name||"?").trim().slice(0,2)}
+function schoolName(id){return data.schools.find(x=>x.id===id)?.name||"未指定學校"}
+function gradeName(id){return data.grades.find(x=>x.id===id)?.name||"未指定年級"}
+function filteredStudents(){return data.students.filter(s=>s.schoolId===data.filter.schoolId && s.gradeId===data.filter.gradeId).sort((a,b)=>a.name.localeCompare(b.name,"zh-Hant"))}
+function rankedStudents(){return [...filteredStudents()].sort((a,b)=>b.level-a.level || a.name.localeCompare(b.name,"zh-Hant"))}
+function selected(){
+  if(!data.students || !data.students.length) return null;
+  let s=data.students.find(st=>st.id===data.selectedId);
+  if(s) return s;
+  const fs=filteredStudents();
+  s=fs[0] || data.students[0] || null;
+  if(s) data.selectedId=s.id;
+  return s;
+}
+function selectStudent(id){
+  data.selectedId=id;
+  const s=data.students.find(st=>st.id===id);
+  if(s){
+    data.filter=data.filter||{};
+    data.filter.schoolId=s.schoolId;
+    data.filter.gradeId=s.gradeId;
+    data.overview=data.overview||{scope:"class"};
+    data.overview.schoolId=s.schoolId;
+    data.overview.gradeId=s.gradeId;
+  }
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+  scheduleCloudSave();
+}
+function setFilter(k,v){
+  data.filter=data.filter||{schoolId:data.schools[0].id,gradeId:data.grades[0].id};
+  data.filter[k]=v;
+  data.overview=data.overview||{scope:"class"};
+  data.overview.schoolId=data.filter.schoolId;
+  data.overview.gradeId=data.filter.gradeId;
+  const fs=filteredStudents();
+  data.selectedId=fs[0]?.id||null;
+  data.updatedAt=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+  scheduleCloudSave();
+}
+function updateSelected(k,v){
+  const s=selected(); 
+  if(!s)return; 
+  s[k]=v; 
+  if(k==="schoolId"||k==="gradeId"){
+    data.filter=data.filter||{};
+    data.filter.schoolId=s.schoolId;
+    data.filter.gradeId=s.gradeId;
+    data.overview=data.overview||{scope:"class"};
+    data.overview.schoolId=s.schoolId;
+    data.overview.gradeId=s.gradeId;
+  }
+  data.updatedAt=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+  scheduleCloudSave();
+}
+function setLevelManual(v){
+  const s=selected(); 
+  if(!s)return; 
+  s.level=clamp(v); 
+  data.updatedAt=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+  scheduleCloudSave();
+}
+function changeLevel(delta){
+  const s=selected(); 
+  if(!s)return; 
+  s.level=clamp((parseInt(s.level)||1)+delta); 
+  data.updatedAt=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+  scheduleCloudSave();
+  toast(`${s.name} 現在 Lv.${s.level}`);
+}
+function addStudent(){const name=document.getElementById("newName").value.trim(); if(!name){toast("請先輸入學生姓名");return} const s={id:uid(),name,level:clamp(document.getElementById("newLevel").value),photo:"",notes:"",schoolId:data.filter.schoolId,gradeId:data.filter.gradeId}; data.students.push(s); data.selectedId=s.id; document.getElementById("newName").value=""; save(); toast("已新增學生")}
+function deleteSelected(){const s=selected(); if(!s)return; if(!confirm(`確定刪除 ${s.name} 嗎？`))return; data.students=data.students.filter(x=>x.id!==s.id); data.selectedId=filteredStudents()[0]?.id||null; save(); toast("已刪除")}
+function resetPhoto(){const s=selected(); if(!s)return; s.photo=""; save();}
+function loadPhoto(e){const file=e.target.files[0]; const s=selected(); if(!file||!s)return; const reader=new FileReader(); reader.onload=()=>{const img=new Image(); img.onload=()=>{const canvas=document.createElement("canvas"); const max=420; let w=img.width,h=img.height; if(w>h){if(w>max){h*=max/w;w=max}}else{if(h>max){w*=max/h;h=max}} canvas.width=w;canvas.height=h;canvas.getContext("2d").drawImage(img,0,0,w,h); s.photo=canvas.toDataURL("image/jpeg",0.78); e.target.value=""; save(); toast("照片已更新")}; img.src=reader.result}; reader.readAsDataURL(file)}
+function avatarHTML(s,cls="avatar"){if(!s)return`<div class="${cls}">?</div>`; return `<div class="${cls}">${s.photo?`<img src="${s.photo}">`:initials(s.name)}</div>`}
+function selectTopStudent(){const r=rankedStudents(); if(r[0]){data.selectedId=r[0].id;save();}else toast("目前班級還沒有學生")}
+function optionHTML(list,selectedId){return list.map(x=>`<option value="${x.id}" ${x.id===selectedId?'selected':''}>${x.name}</option>`).join("")}
+function renderSelects(){
+  data.filter=data.filter||{schoolId:data.schools[0].id,gradeId:data.grades[0].id};
+  data.overview=data.overview||{scope:"class"};
+  data.overview.schoolId=data.filter.schoolId;
+  data.overview.gradeId=data.filter.gradeId;
+
+  ["filterSchool","studentSchool","overviewSchool"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=optionHTML(data.schools,data.filter.schoolId);
+  });
+  ["filterGrade","studentGrade","overviewGrade"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=optionHTML(data.grades,data.filter.gradeId);
+  });
+  const scope=document.getElementById("overviewScope");
+  if(scope) scope.value=data.overview?.scope||"class";
+
+  const s=selected();
+  const editSchool=document.getElementById("editSchool");
+  const editGrade=document.getElementById("editGrade");
+  if(editSchool) editSchool.innerHTML=optionHTML(data.schools,s?.schoolId||data.filter.schoolId);
+  if(editGrade) editGrade.innerHTML=optionHTML(data.grades,s?.gradeId||data.filter.gradeId);
+
+  const studentSelect=document.getElementById("studentSelect");
+  if(studentSelect){
+    studentSelect.innerHTML=filteredStudents().map(st=>`<option value="${st.id}" ${st.id===data.selectedId?'selected':''}>${st.name}｜Lv.${st.level}</option>`).join("");
+  }
+}
+function renderList(){
+  const fs=filteredStudents();
+  document.getElementById("studentList").innerHTML=fs.map(s=>`
+  <div class="student-item ${s.id===data.selectedId?'selected':''}" onclick="selectStudent('${s.id}')">
+    ${avatarHTML(s)}
+    <div><div class="name">${s.name}</div><div class="meta">${schoolName(s.schoolId)}｜${gradeName(s.gradeId)}｜${levelInfo(s.level).stage}</div></div>
+    <div class="level-pill">Lv.${s.level}</div>
+  </div>`).join("") || `<p class="small">目前這個學校 / 年級還沒有學生。</p>`;
+}
+function renderStats(){
+  const fs=filteredStudents(); const count=fs.length; const avg=count? (fs.reduce((a,s)=>a+s.level,0)/count).toFixed(1):"0"; const max=count? Math.max(...fs.map(s=>s.level)):0;
+  document.getElementById("statCount").textContent=count; document.getElementById("statAvg").textContent=avg; document.getElementById("statMax").textContent=max;
+}
+function renderRank(){
+  const r=rankedStudents().slice(0,10);
+  document.getElementById("rankList").innerHTML=r.map((s,i)=>`
+    <div class="rank" onclick="selectStudent('${s.id}')">
+      <div class="medal">${i+1}</div>${avatarHTML(s)}
+      <div style="flex:1"><div class="name">${s.name}</div><div class="meta">${levelInfo(s.level).reward}</div></div>
+      <div class="level-pill">Lv.${s.level}</div>
+    </div>`).join("") || `<p class="small">排行榜會在新增學生後顯示。</p>`;
+}
+function renderEditor(){
+  const s=selected(); 
+  const empty=document.getElementById("emptyEditor"), editor=document.getElementById("editor");
+  if(!s){
+    if(empty) empty.classList.remove("hidden");
+    if(editor) editor.classList.add("hidden");
+    renderStudentEmpty();
+    return;
+  }
+  if(empty) empty.classList.add("hidden");
+  if(editor) editor.classList.remove("hidden");
+
+  const lv=clamp(s.level);
+  s.level=lv;
+  const info=levelInfo(lv);
+
+  const editName=document.getElementById("editName");
+  const editLevel=document.getElementById("editLevel");
+  const notes=document.getElementById("notes");
+  const editSchool=document.getElementById("editSchool");
+  const editGrade=document.getElementById("editGrade");
+
+  if(editName) editName.value=s.name||"";
+  if(editLevel){ editLevel.max=maxLevel(); editLevel.value=lv; }
+  if(notes) notes.value=s.notes||"";
+  if(editSchool) editSchool.value=s.schoolId||data.filter.schoolId;
+  if(editGrade) editGrade.value=s.gradeId||data.filter.gradeId;
+
+  const av=document.getElementById("editAvatar");
+  if(av) av.outerHTML=avatarHTML(s,"avatar");
+
+  document.getElementById("stageName").textContent=info.stage||"未設定階段";
+  document.getElementById("bigLevel").textContent="Lv."+lv;
+  document.getElementById("levelBar").style.width=pct(lv)+"%";
+  document.getElementById("levelPercent").textContent=`進度 ${pct(lv)}%｜距離最高級 Lv.${maxLevel()} 還有 ${maxLevel()-lv} 級`;
+  document.getElementById("objectives").innerHTML=(info.goals||[]).map(g=>`<div class="obj">✔ ${escapeAttr(g)}</div>`).join("") || `<div class="obj">尚未設定目標</div>`;
+  document.getElementById("reward").textContent="本級獎勵：🎁 "+(info.reward||"未設定獎勵");
+
+  renderStudent(s);
+}
+function renderStudentEmpty(){document.getElementById("studentName").textContent="尚未選擇學生";document.getElementById("studentObjectives").innerHTML=""}
+function renderStudent(s){
+  if(!s){renderStudentEmpty();return}
+  const lv=clamp(s.level);
+  s.level=lv;
+  const info=levelInfo(lv);
+  const av=document.getElementById("studentAvatar");
+  if(av) av.outerHTML=avatarHTML(s,"student-avatar");
+  document.getElementById("studentName").textContent=s.name||"";
+  document.getElementById("studentStage").textContent=`${schoolName(s.schoolId)}｜${gradeName(s.gradeId)}｜${info.stage||"未設定階段"}`;
+  document.getElementById("studentLevel").textContent="Lv."+lv;
+  document.getElementById("levelRing").style.setProperty("--pct",pct(lv)+"%");
+  document.getElementById("studentBar").style.width=pct(lv)+"%";
+  document.getElementById("studentReward").textContent="🎁 "+(info.reward||"未設定獎勵");
+  const next=Math.min(maxLevel(),lv+1);
+  document.getElementById("nextReward").textContent=lv<maxLevel()?"下一級："+(levelInfo(next).reward||"未設定獎勵"):"已完成最終試煉";
+  document.getElementById("studentObjectives").innerHTML=(info.goals||[]).map(g=>`<div class="obj">⭐ ${escapeAttr(g)}</div>`).join("") || `<div class="obj">尚未設定目標</div>`;
+  document.getElementById("studentNotes").textContent=s.notes?"老師備註："+s.notes:"";
+}
+function renderManage(){
+  document.getElementById("schoolManage").innerHTML=data.schools.map(x=>`
+    <div class="manage-row"><input value="${escapeAttr(x.name)}" onchange="renameItem('schools','${x.id}',this.value)"><button onclick="setFilter('schoolId','${x.id}')">選取</button><button class="warn" onclick="deleteItem('schools','${x.id}')">刪除</button></div>`).join("");
+  document.getElementById("gradeManage").innerHTML=data.grades.map(x=>`
+    <div class="manage-row"><input value="${escapeAttr(x.name)}" onchange="renameItem('grades','${x.id}',this.value)"><button onclick="setFilter('gradeId','${x.id}')">選取</button><button class="warn" onclick="deleteItem('grades','${x.id}')">刪除</button></div>`).join("");
+}
+function escapeAttr(str){return String(str||"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
+function addSchool(){const name=document.getElementById("newSchoolName").value.trim(); if(!name){toast("請輸入學校名稱");return} const x={id:uid(),name}; data.schools.push(x); data.filter.schoolId=x.id; data.overview=data.overview||{scope:"class"}; data.overview.schoolId=x.id; data.overview.gradeId=data.filter.gradeId; document.getElementById("newSchoolName").value=""; save(); toast("已新增學校")}
+function addGrade(){const name=document.getElementById("newGradeName").value.trim(); if(!name){toast("請輸入年級 / 班級名稱");return} const x={id:uid(),name}; data.grades.push(x); data.filter.gradeId=x.id; data.overview=data.overview||{scope:"class"}; data.overview.schoolId=data.filter.schoolId; data.overview.gradeId=x.id; document.getElementById("newGradeName").value=""; save(); toast("已新增年級")}
+function renameItem(type,id,value){const item=data[type].find(x=>x.id===id); if(item){item.name=value.trim()||item.name; save(); toast("名稱已更新")}}
+function deleteItem(type,id){
+  const label=type==="schools"?"學校":"年級/班級";
+  if(data[type].length<=1){toast(`至少要保留一個${label}`);return}
+  const used=data.students.some(s=> type==="schools"?s.schoolId===id:s.gradeId===id);
+  if(used && !confirm(`有學生正在使用這個${label}，刪除後會移到第一個${label}。確定刪除？`))return;
+  const first=data[type].find(x=>x.id!==id);
+  data.students.forEach(s=>{if(type==="schools"&&s.schoolId===id)s.schoolId=first.id; if(type==="grades"&&s.gradeId===id)s.gradeId=first.id});
+  data[type]=data[type].filter(x=>x.id!==id);
+  if(type==="schools"&&data.filter.schoolId===id)data.filter.schoolId=first.id;
+  if(type==="grades"&&data.filter.gradeId===id)data.filter.gradeId=first.id;
+  data.overview=data.overview||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId,scope:"class"};
+  data.overview.schoolId=data.filter.schoolId;
+  data.overview.gradeId=data.filter.gradeId;
+  save(); toast("已刪除")
+}
+function setView(v){
+  const sections=["teacher","student","overview","calendar","lessonLog","coursePlan","manage","levels","cloud"];
+  sections.forEach(name=>{
+    const id=name+"View";
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle("hidden", name!==v);
+  });
+  const menu=document.getElementById("mainMenu");
+  if(menu) menu.value=v;
+  if(v==="cloud")loadCloudConfigToForm();
+  render();
+}
+function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="battle-panflute-cloud-full-backup.json";a.click();URL.revokeObjectURL(a.href)}
+function importData(e){const file=e.target.files[0]; if(!file)return; const reader=new FileReader(); reader.onload=()=>{try{const obj=JSON.parse(reader.result); if(!obj.students||!Array.isArray(obj.students))throw new Error("格式錯誤"); data={...defaultData,...obj}; data.schools=data.schools?.length?data.schools:defaultData.schools; data.grades=data.grades?.length?data.grades:defaultData.grades; data.levels=data.levels?.length?data.levels:JSON.parse(JSON.stringify(defaultLevels)); data.filter=data.filter||{schoolId:data.schools[0].id,gradeId:data.grades[0].id}; data.overview=data.overview||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId,scope:"class"}; data.calendar=data.calendar||{schoolId:data.filter.schoolId,scope:"school",month:""}; data.logFilter=data.logFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId,scope:"class"}; data.courseFilter=data.courseFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId}; data.events=data.events||[]; data.lessonLogs=data.lessonLogs||[]; data.coursePlans=data.coursePlans||[]; data.selectedLevel=data.selectedLevel||1; data.students.forEach(s=>s.level=clamp(s.level)); localStorage.setItem(KEY,JSON.stringify(data));render();toast("匯入完成")}catch(err){toast("匯入失敗，檔案格式不正確")}};reader.readAsText(file);e.target.value=""}
+
+function renderLevelsManage(){
+  const list=document.getElementById("levelManageList");
+  if(!list)return;
+  const arr=levelsArr();
+  list.innerHTML=arr.slice(1).map((lv,i)=>{
+    const n=i+1;
+    return `<div class="student-item ${data.selectedLevel===n?'selected':''}" onclick="selectLevelToEdit(${n})">
+      <div class="level-pill">Lv.${n}</div>
+      <div style="flex:1"><div class="name">${escapeAttr(lv.stage||'未命名階段')}</div><div class="meta">${escapeAttr(lv.reward||'未設定獎勵')}｜${(lv.goals||[]).length} 個目標</div></div>
+    </div>`;
+  }).join("");
+  renderLevelEditor();
+}
+function selectLevelToEdit(n){data.selectedLevel=clamp(n);save();}
+function renderLevelEditor(){
+  const empty=document.getElementById("levelEditorEmpty"), editor=document.getElementById("levelEditor");
+  if(!empty||!editor)return;
+  const n=clamp(data.selectedLevel||1), lv=levelInfo(n);
+  empty.classList.add("hidden"); editor.classList.remove("hidden");
+  document.getElementById("levelEditNumber").value="Lv."+n;
+  document.getElementById("levelEditStage").value=lv.stage||"";
+  document.getElementById("levelEditReward").value=lv.reward||"";
+  document.getElementById("levelEditGoals").value=(lv.goals||[]).join("\n");
+  document.getElementById("levelPreviewStage").textContent=lv.stage||"未命名階段";
+  document.getElementById("levelPreviewNumber").textContent="Lv."+n;
+  document.getElementById("levelPreviewGoals").innerHTML=(lv.goals||[]).map(g=>`<div class="obj">✔ ${escapeAttr(g)}</div>`).join("") || `<div class="obj">尚未設定目標</div>`;
+  document.getElementById("levelPreviewReward").textContent="本級獎勵：🎁 "+(lv.reward||"尚未設定");
+}
+function updateLevelField(field,value){
+  const n=clamp(data.selectedLevel||1);
+  if(!data.levels)data.levels=JSON.parse(JSON.stringify(defaultLevels));
+  data.levels[n][field]=value;
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+}
+function updateLevelGoals(text){
+  const n=clamp(data.selectedLevel||1);
+  if(!data.levels)data.levels=JSON.parse(JSON.stringify(defaultLevels));
+  data.levels[n].goals=text.split("\n").map(x=>x.trim()).filter(Boolean);
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+}
+function addGoalToLevel(){
+  const n=clamp(data.selectedLevel||1);
+  data.levels[n].goals=data.levels[n].goals||[];
+  data.levels[n].goals.push("新增目標");
+  save();
+}
+function removeLastGoalFromLevel(){
+  const n=clamp(data.selectedLevel||1);
+  data.levels[n].goals=data.levels[n].goals||[];
+  data.levels[n].goals.pop();
+  save();
+}
+function addLevel(){
+  if(!data.levels)data.levels=JSON.parse(JSON.stringify(defaultLevels));
+  const n=maxLevel()+1;
+  data.levels.push({stage:"自訂階段",reward:`Lv.${n} 獎勵`,goals:["請輸入升級目標一","請輸入升級目標二"]});
+  data.selectedLevel=n;
+  save();
+  toast(`已新增 Lv.${n}`);
+}
+function deleteLastLevel(){
+  if(maxLevel()<=1){toast("至少要保留1級");return}
+  const last=maxLevel();
+  const used=data.students.some(s=>s.level>=last);
+  if(used && !confirm(`有學生目前在 Lv.${last}，刪除後會調整到 Lv.${last-1}。確定刪除？`))return;
+  data.levels.pop();
+  data.students.forEach(s=>s.level=clamp(s.level));
+  data.selectedLevel=clamp(data.selectedLevel||1);
+  save();
+  toast("已刪除最後一級");
+}
+function resetLevelsConfirm(){
+  if(!confirm("確定恢復預設50級？你手動修改的等級目標與獎勵會被覆蓋。"))return;
+  data.levels=JSON.parse(JSON.stringify(defaultLevels));
+  data.students.forEach(s=>s.level=clamp(s.level));
+  data.selectedLevel=1;
+  save();
+  toast("已恢復預設50級");
+}
+function previewLevelOnStudent(){
+  const s=selected();
+  if(!s){toast("請先選擇學生");return}
+  s.level=clamp(data.selectedLevel||1);
+  save();
+  setView("student");
+}
+
+
+function setOverviewFilter(k,v){
+  data.filter=data.filter||{schoolId:data.schools[0].id,gradeId:data.grades[0].id};
+  data.filter[k]=v;
+  data.overview=data.overview||{scope:"class"};
+  data.overview.schoolId=data.filter.schoolId;
+  data.overview.gradeId=data.filter.gradeId;
+  const fs=filteredStudents();
+  data.selectedId=fs[0]?.id||null;
+  data.updatedAt=Date.now();
+  localStorage.setItem(KEY,JSON.stringify(data));
+  render();
+  scheduleCloudSave();
+}
+function setOverviewScope(v){
+  data.overview=data.overview||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId,scope:"class"};
+  data.overview.scope=v;
+  save();
+}
+function overviewStudents(){
+  const scope=(data.overview&&data.overview.scope)||"class";
+  if(scope==="all") return [...data.students];
+  if(scope==="school") return data.students.filter(s=>s.schoolId===data.filter.schoolId);
+  return data.students.filter(s=>s.schoolId===data.filter.schoolId && s.gradeId===data.filter.gradeId);
+}
+function bandForAvg(avg){
+  const max=maxLevel();
+  const ratio=max?avg/max:0;
+  if(ratio<0.25) return {name:"啟動中",cls:"band-low",tip:"適合大量短任務、建立成功感"};
+  if(ratio<0.5) return {name:"基礎建立",cls:"band-mid",tip:"可加強音符辨識與穩定換音"};
+  if(ratio<0.75) return {name:"穩定成長",cls:"band-good",tip:"可加入合奏、節奏與表情任務"};
+  return {name:"高階挑戰",cls:"band-high",tip:"適合表演任務、分部合奏與自主練習"};
+}
+function renderOverview(){
+  if(!document.getElementById("levelBoard")) return;
+  const students=overviewStudents();
+  const count=students.length;
+  const avg=count?students.reduce((a,s)=>a+s.level,0)/count:0;
+  const band=bandForAvg(avg);
+  document.getElementById("overviewCount").textContent=count;
+  document.getElementById("overviewAvg").textContent=count?avg.toFixed(1):"0";
+  document.getElementById("overviewBand").textContent=band.name;
+
+  const byLevel={};
+  students.forEach(s=>{byLevel[s.level]=byLevel[s.level]||[]; byLevel[s.level].push(s)});
+  const board=document.getElementById("levelBoard");
+  board.style.gridTemplateColumns = `repeat(10,74px)`;
+  let cells=[];
+  for(let i=1;i<=maxLevel();i++){
+    const group=byLevel[i]||[];
+    const dots=group.slice(0,6).map(()=>`<span class="token"></span>`).join("") + (group.length>6?`<span class="token more">+${group.length-6}</span>`:"");
+    cells.push(`<div class="tile ${group.length?'active':''}" onclick="showTileDetail(${i})">
+      <div class="lv">Lv.${i}</div>
+      <div class="count">${group.length}</div>
+      <div class="tokens">${dots}</div>
+    </div>`);
+  }
+  board.innerHTML=cells.join("");
+
+  renderSchoolAnalysis();
+  renderGradeAnalysis();
+  renderBandAnalysis(students);
+}
+function showTileDetail(level){
+  const students=overviewStudents().filter(s=>s.level===level);
+  const box=document.getElementById("tileDetail");
+  if(!students.length){box.style.display="none";return}
+  box.style.display="block";
+  box.innerHTML=`Lv.${level}｜${levelInfo(level).stage}：${students.map(s=>escapeAttr(s.name)).join("、")}`;
+}
+function renderSchoolAnalysis(){
+  const rows=data.schools.map(sc=>{
+    const ss=data.students.filter(s=>s.schoolId===sc.id);
+    const avg=ss.length?ss.reduce((a,s)=>a+s.level,0)/ss.length:0;
+    const band=bandForAvg(avg);
+    return `<tr><td>${escapeAttr(sc.name)}</td><td>${ss.length}</td><td>${ss.length?avg.toFixed(1):"0"}</td><td><span class="level-band ${band.cls}">${band.name}</span></td></tr>`;
+  }).join("");
+  document.getElementById("schoolAnalysis").innerHTML=rows || `<tr><td colspan="4">尚無資料</td></tr>`;
+}
+function renderGradeAnalysis(){
+  let rows=[];
+  data.schools.forEach(sc=>{
+    data.grades.forEach(gr=>{
+      const ss=data.students.filter(s=>s.schoolId===sc.id && s.gradeId===gr.id);
+      if(!ss.length) return;
+      const avg=ss.reduce((a,s)=>a+s.level,0)/ss.length;
+      const band=bandForAvg(avg);
+      rows.push(`<tr><td>${escapeAttr(sc.name)} / ${escapeAttr(gr.name)}</td><td>${ss.length}</td><td>${avg.toFixed(1)}</td><td><span class="level-band ${band.cls}">${band.name}</span></td></tr>`);
+    });
+  });
+  document.getElementById("gradeAnalysis").innerHTML=rows.join("") || `<tr><td colspan="4">尚無資料</td></tr>`;
+}
+function renderBandAnalysis(students){
+  const max=maxLevel();
+  const bands=[
+    {name:"啟動中",min:1,max:Math.max(1,Math.floor(max*.25)),cls:"band-low",tip:"多給成功回饋，目標以吹出聲音、穩定長音為主"},
+    {name:"基礎建立",min:Math.floor(max*.25)+1,max:Math.floor(max*.5),cls:"band-mid",tip:"加強 CDEFGAB 辨識、基本節奏與換音"},
+    {name:"穩定成長",min:Math.floor(max*.5)+1,max:Math.floor(max*.75),cls:"band-good",tip:"加入合奏、表情記號、速度控制"},
+    {name:"高階挑戰",min:Math.floor(max*.75)+1,max:max,cls:"band-high",tip:"安排小老師、主旋律、舞台任務"}
+  ];
+  document.getElementById("bandAnalysis").innerHTML=bands.map(b=>{
+    const n=students.filter(s=>s.level>=b.min&&s.level<=b.max).length;
+    const p=students.length?Math.round(n/students.length*100):0;
+    return `<tr><td><span class="level-band ${b.cls}">${b.name} Lv.${b.min}-${b.max}</span></td><td>${n}</td><td>${p}%</td><td>${b.tip}</td></tr>`;
+  }).join("");
+}
+
+
+
+function hardReloadPage(){
+  location.reload(true);
+}
+
+function forceRefresh(){
+  try{
+    const local=localStorage.getItem(KEY);
+    if(local){
+      data=JSON.parse(local);
+    }
+    data.schools=data.schools?.length?data.schools:defaultData.schools;
+    data.grades=data.grades?.length?data.grades:defaultData.grades;
+    data.levels=data.levels?.length?data.levels:JSON.parse(JSON.stringify(defaultLevels));
+    data.filter=data.filter||{schoolId:data.schools[0].id,gradeId:data.grades[0].id};
+    data.overview=data.overview||{scope:"class"};
+    data.overview.schoolId=data.filter.schoolId;
+    data.overview.gradeId=data.filter.gradeId;
+    data.events=data.events||[];
+    data.lessonLogs=data.lessonLogs||[];
+    data.coursePlans=data.coursePlans||[];
+    data.calendar=data.calendar||{schoolId:data.filter.schoolId,scope:"school",month:monthStr()};
+    data.logFilter=data.logFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId,scope:"class"};
+    data.courseFilter=data.courseFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId};
+    data.students=(data.students||[]).map(s=>({...s,level:clamp(s.level)}));
+    localStorage.setItem(KEY,JSON.stringify(data));
+  }catch(e){
+    console.warn(e);
+  }
+  render();
+  toast("已強制重新整理 V2");
+}
+
+function todayStr(){
+  const d=new Date();
+  return d.toISOString().slice(0,10);
+}
+function monthStr(d=new Date()){
+  return d.toISOString().slice(0,7);
+}
+function ensureTeachingData(){
+  data.events=data.events||[];
+  data.lessonLogs=data.lessonLogs||[];
+  data.coursePlans=data.coursePlans||[];
+  data.courseFilter=data.courseFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId};
+  data.calendar=data.calendar||{schoolId:data.filter.schoolId,scope:"school",month:monthStr()};
+  if(!data.calendar.month)data.calendar.month=monthStr();
+  data.logFilter=data.logFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId,scope:"class"};
+}
+function renderTeachingSelects(){
+  ensureTeachingData();
+  const schoolSelects=["calendarSchool","eventSchool","logFilterSchool","logSchool"];
+  schoolSelects.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=optionHTML(data.schools, id==="calendarSchool"?data.calendar.schoolId:id==="logFilterSchool"?data.logFilter.schoolId:data.filter.schoolId);
+  });
+  const gradeSelects=["logFilterGrade","logGrade"];
+  gradeSelects.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=optionHTML(data.grades, id==="logFilterGrade"?data.logFilter.gradeId:data.filter.gradeId);
+  });
+  const cm=document.getElementById("calendarMonth");
+  if(cm) cm.value=data.calendar.month||monthStr();
+  const cs=document.getElementById("calendarScope");
+  if(cs) cs.value=data.calendar.scope||"school";
+  const ls=document.getElementById("logScope");
+  if(ls) ls.value=data.logFilter.scope||"class";
+}
+function setCalendarSchool(v){data.calendar.schoolId=v; save();}
+function setCalendarScope(v){data.calendar.scope=v; save();}
+function setCalendarMonth(v){data.calendar.month=v; save();}
+function changeMonth(delta){
+  ensureTeachingData();
+  const [y,m]=data.calendar.month.split("-").map(Number);
+  const d=new Date(y,m-1+delta,1);
+  data.calendar.month=monthStr(d);
+  save();
+}
+function goToday(){data.calendar.month=monthStr(); save();}
+function eventClass(type){
+  return type==="exam"?"event-exam":type==="concert"?"event-concert":type==="school"?"event-school":"event-other";
+}
+function eventTypeName(type){
+  return type==="exam"?"考試":type==="concert"?"演出/活動":type==="school"?"學校行事":"其他";
+}
+function renderCalendar(){
+  if(!document.getElementById("calendarGrid")) return;
+  ensureTeachingData();
+  const month=data.calendar.month||monthStr();
+  const [y,m]=month.split("-").map(Number);
+  const first=new Date(y,m-1,1);
+  const startDay=first.getDay();
+  const days=new Date(y,m,0).getDate();
+  const title=document.getElementById("calendarTitle");
+  if(title) title.textContent=`${y}年${m}月 行事曆`;
+  const grid=document.getElementById("calendarGrid");
+  const names=["日","一","二","三","四","五","六"];
+  let htmlCal=names.map(n=>`<div class="day-name">${n}</div>`).join("");
+  for(let i=0;i<startDay;i++) htmlCal+=`<div></div>`;
+  const scope=data.calendar.scope||"school";
+  for(let d=1;d<=days;d++){
+    const date=`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const evs=(data.events||[]).filter(e=>e.date===date && (scope==="all" || e.schoolId===data.calendar.schoolId));
+    const chips=evs.map(e=>`<div class="event-chip ${eventClass(e.type)}" onclick="editEvent('${e.id}')">${escapeAttr(e.title||"未命名")}</div>`).join("");
+    htmlCal+=`<div class="day-cell ${date===todayStr()?'today':''}" onclick="quickEventDate('${date}')"><div class="day-num">${d}</div>${chips}</div>`;
+  }
+  grid.innerHTML=htmlCal;
+}
+function quickEventDate(date){
+  const el=document.getElementById("eventDate");
+  if(el && !document.getElementById("eventId").value) el.value=date;
+}
+function clearEventForm(){
+  ["eventId","eventTitle","eventNotes"].forEach(id=>{const el=document.getElementById(id); if(el)el.value=""});
+  document.getElementById("eventDate").value=todayStr();
+  document.getElementById("eventSchool").value=data.calendar?.schoolId||data.filter.schoolId;
+  document.getElementById("eventType").value="exam";
+}
+function saveEvent(){
+  ensureTeachingData();
+  const id=document.getElementById("eventId").value || uid();
+  const item={
+    id,
+    date:document.getElementById("eventDate").value || todayStr(),
+    schoolId:document.getElementById("eventSchool").value,
+    type:document.getElementById("eventType").value,
+    title:document.getElementById("eventTitle").value.trim()||"未命名事件",
+    notes:document.getElementById("eventNotes").value
+  };
+  const idx=data.events.findIndex(e=>e.id===id);
+  if(idx>=0)data.events[idx]=item; else data.events.push(item);
+  data.calendar.schoolId=item.schoolId;
+  data.calendar.month=item.date.slice(0,7);
+  data.updatedAt=Date.now();
+  save();
+  document.getElementById("eventId").value=id;
+  toast("行事曆事件已儲存");
+}
+function editEvent(id){
+  const e=data.events.find(x=>x.id===id); if(!e)return;
+  document.getElementById("eventId").value=e.id;
+  document.getElementById("eventDate").value=e.date;
+  document.getElementById("eventSchool").value=e.schoolId;
+  document.getElementById("eventType").value=e.type||"other";
+  document.getElementById("eventTitle").value=e.title||"";
+  document.getElementById("eventNotes").value=e.notes||"";
+}
+function deleteEvent(){
+  const id=document.getElementById("eventId").value;
+  if(!id){toast("尚未選擇事件");return}
+  if(!confirm("確定刪除這個行事曆事件？"))return;
+  data.events=data.events.filter(e=>e.id!==id);
+  clearEventForm();
+  save();
+  toast("已刪除事件");
+}
+
+function setLogFilter(k,v){
+  data.logFilter=data.logFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId,scope:"class"};
+  data.logFilter[k]=v;
+  save();
+}
+function setLogScope(v){data.logFilter.scope=v; save();}
+function filteredLogs(){
+  ensureTeachingData();
+  const f=data.logFilter;
+  return data.lessonLogs.filter(l=>{
+    if(f.scope==="all") return true;
+    if(f.scope==="school") return l.schoolId===f.schoolId;
+    return l.schoolId===f.schoolId && l.gradeId===f.gradeId;
+  }).sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+}
+function newLessonLog(){
+  clearLessonLogForm();
+  document.getElementById("logDate").value=todayStr();
+  document.getElementById("logSchool").value=data.logFilter?.schoolId||data.filter.schoolId;
+  document.getElementById("logGrade").value=data.logFilter?.gradeId||data.filter.gradeId;
+}
+function clearLessonLogForm(){
+  ["logId","logTitle","logContent","logNext"].forEach(id=>{const el=document.getElementById(id); if(el)el.value=""});
+  const d=document.getElementById("logDate"); if(d)d.value=todayStr();
+}
+function saveLessonLog(){
+  ensureTeachingData();
+  const id=document.getElementById("logId").value || uid();
+  const item={
+    id,
+    date:document.getElementById("logDate").value || todayStr(),
+    title:document.getElementById("logTitle").value.trim()||"未命名課程",
+    schoolId:document.getElementById("logSchool").value,
+    gradeId:document.getElementById("logGrade").value,
+    content:document.getElementById("logContent").value,
+    next:document.getElementById("logNext").value
+  };
+  const idx=data.lessonLogs.findIndex(l=>l.id===id);
+  if(idx>=0)data.lessonLogs[idx]=item; else data.lessonLogs.push(item);
+  data.logFilter.schoolId=item.schoolId; data.logFilter.gradeId=item.gradeId;
+  data.updatedAt=Date.now();
+  save();
+  document.getElementById("logId").value=id;
+  toast("上課紀錄已儲存");
+}
+function editLessonLog(id){
+  const l=data.lessonLogs.find(x=>x.id===id); if(!l)return;
+  document.getElementById("logId").value=l.id;
+  document.getElementById("logDate").value=l.date||todayStr();
+  document.getElementById("logTitle").value=l.title||"";
+  document.getElementById("logSchool").value=l.schoolId||data.filter.schoolId;
+  document.getElementById("logGrade").value=l.gradeId||data.filter.gradeId;
+  document.getElementById("logContent").value=l.content||"";
+  document.getElementById("logNext").value=l.next||"";
+}
+function deleteLessonLog(){
+  const id=document.getElementById("logId").value;
+  if(!id){toast("尚未選擇紀錄");return}
+  if(!confirm("確定刪除這筆上課紀錄？"))return;
+  data.lessonLogs=data.lessonLogs.filter(l=>l.id!==id);
+  clearLessonLogForm();
+  save();
+  toast("已刪除紀錄");
+}
+function renderLessonLogs(){
+  const box=document.getElementById("lessonLogList"); if(!box)return;
+  const logs=filteredLogs();
+  box.innerHTML=logs.map(l=>`<div class="log-card" onclick="editLessonLog('${l.id}')">
+    <div class="log-title">${escapeAttr(l.title)}</div>
+    <div class="log-meta">${l.date||""}｜${schoolName(l.schoolId)}｜${gradeName(l.gradeId)}</div>
+    <div class="log-body">${escapeAttr(l.content||"")}</div>
+    ${l.next?`<div class="reward">下次提醒：${escapeAttr(l.next)}</div>`:""}
+  </div>`).join("") || `<p class="small">目前沒有上課紀錄。</p>`;
+}
+
+
+function setCourseFilter(k,v){
+  data.courseFilter=data.courseFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId};
+  data.courseFilter[k]=v;
+  clearCoursePlanForm();
+  save();
+}
+function courseFilter(){
+  data.courseFilter=data.courseFilter||{schoolId:data.filter.schoolId,gradeId:data.filter.gradeId};
+  return data.courseFilter;
+}
+function filteredCoursePlans(){
+  const f=courseFilter();
+  return (data.coursePlans||[]).filter(c=>c.schoolId===f.schoolId && c.gradeId===f.gradeId)
+    .sort((a,b)=>(a.week||"").localeCompare(b.week||"","zh-Hant",{numeric:true}));
+}
+function newCoursePlan(){
+  clearCoursePlanForm();
+  const f=courseFilter();
+  document.getElementById("courseSchool").value=f.schoolId;
+  document.getElementById("courseGrade").value=f.gradeId;
+}
+function clearCoursePlanForm(){
+  ["courseId","courseWeek","courseLevelRange","courseTitle","courseGoals","courseActivities"].forEach(id=>{const el=document.getElementById(id); if(el)el.value=""});
+  const f=courseFilter();
+  const cs=document.getElementById("courseSchool"); if(cs)cs.value=f.schoolId;
+  const cg=document.getElementById("courseGrade"); if(cg)cg.value=f.gradeId;
+}
+function saveCoursePlan(){
+  data.coursePlans=data.coursePlans||[];
+  const id=document.getElementById("courseId").value || uid();
+  const item={
+    id,
+    schoolId:document.getElementById("courseSchool").value,
+    gradeId:document.getElementById("courseGrade").value,
+    week:document.getElementById("courseWeek").value.trim()||"未設定週次",
+    levelRange:document.getElementById("courseLevelRange").value.trim(),
+    title:document.getElementById("courseTitle").value.trim()||"未命名主題",
+    goals:document.getElementById("courseGoals").value,
+    activities:document.getElementById("courseActivities").value
+  };
+  const idx=data.coursePlans.findIndex(c=>c.id===id);
+  if(idx>=0)data.coursePlans[idx]=item; else data.coursePlans.push(item);
+  data.courseFilter={schoolId:item.schoolId,gradeId:item.gradeId};
+  data.updatedAt=Date.now();
+  save();
+  document.getElementById("courseId").value=id;
+  toast("課程總覽已儲存");
+}
+function editCoursePlan(id){
+  const c=data.coursePlans.find(x=>x.id===id); if(!c)return;
+  document.getElementById("courseId").value=c.id;
+  document.getElementById("courseSchool").value=c.schoolId||courseFilter().schoolId;
+  document.getElementById("courseGrade").value=c.gradeId||courseFilter().gradeId;
+  document.getElementById("courseWeek").value=c.week||"";
+  document.getElementById("courseLevelRange").value=c.levelRange||"";
+  document.getElementById("courseTitle").value=c.title||"";
+  document.getElementById("courseGoals").value=c.goals||"";
+  document.getElementById("courseActivities").value=c.activities||"";
+}
+function deleteCoursePlan(){
+  const id=document.getElementById("courseId").value;
+  if(!id){toast("尚未選擇課程週次");return}
+  if(!confirm("確定刪除這個課程週次？"))return;
+  data.coursePlans=data.coursePlans.filter(c=>c.id!==id);
+  clearCoursePlanForm();
+  save();
+  toast("已刪除課程週次");
+}
+function defaultCourseSamples(){
+  return [
+    ["第1週","Lv.1–2","吹出聲音與高低音感知","吹出聲音\n認識排笛高低音","聲音探索、氣息遊戲、短獎勵任務"],
+    ["第2週","Lv.3–4","穩定長音與兩音切換","長音3秒\n分辨高低音","長音挑戰、老師模仿、兩音接龍"],
+    ["第3週","Lv.5–6","五線譜上下與Do/C","認識五線譜上下\n吹出Do","Do定位、音符卡、吹奏任務"],
+    ["第4週","Lv.7–8","Re/D與Do-Re換音","認識Re\nDo-Re不中斷","雙音連擊、音符辨識小測驗"],
+    ["第5週","Lv.9–10","Mi/E與CDE","認識Mi\n吹Do-Re-Mi","三音旋律、CDE紙筆小任務"],
+    ["第6週","Lv.11–12","三音短旋律與Fa/F","穩定三音\n認識Fa","短旋律模仿、Fa音符任務"],
+    ["第7週","Lv.13–15","CDEF旋律","吹Do-Fa跳音\n完成四音旋律","四音旋律闖關"],
+    ["第8週","Lv.16–17","四分與八分節奏","認識四分音符\n認識八分音符","拍手＋吹奏同步"],
+    ["第9週","Lv.18–20","Sol/G與CDEFG","認識G\n吹五音音階","五音音階地圖"],
+    ["第10週","Lv.21–23","La/A與六音音階","長音5秒\n認識A","六音旋律與穩定度測驗"],
+    ["第11週","Lv.24–25","指定音與全半音概念","找出C-A指定音\n理解音階相鄰","音符尋寶"],
+    ["第12週","Lv.26–30","Ti/B與完整音階","認識B\n吹Do-Do","完整音階Boss關"],
+    ["第13週","Lv.31–33","小節線與4/4拍","認識小節線\n數1-2-3-4","四小節旋律"],
+    ["第14週","Lv.34–35","休止符與3/4拍","認識休止\n認識3/4","含休止的短句"],
+    ["第15週","Lv.36–38","速度、強弱與節拍器","兩種速度\n認識p/mf","表情與節拍器任務"],
+    ["第16週","Lv.39–40","雙人合奏與完整短曲","同步合奏\n吹完整短曲","二重奏任務"],
+    ["第17週","Lv.41–42","樂句與詮釋","分樂句\n同旋律不同表情","音樂表情任務"],
+    ["第18週","Lv.43–45","穩定演奏與主旋律","音準節奏穩定\n合奏主旋律","小舞台練習"],
+    ["第19週","Lv.46–48","音色與視譜","柔/亮音色\n視譜旋律","音色魔法師任務"],
+    ["第20週","Lv.49–50","完整演出與總複習","完整演出\n解釋音符節奏","最終Boss與頒獎"]
+  ];
+}
+function generateDefaultCoursePlan(){
+  const f=courseFilter();
+  const existing=filteredCoursePlans();
+  if(existing.length && !confirm("目前班級已有課程總覽，確定要繼續加入20週範本？"))return;
+  data.coursePlans=data.coursePlans||[];
+  defaultCourseSamples().forEach(s=>data.coursePlans.push({id:uid(),schoolId:f.schoolId,gradeId:f.gradeId,week:s[0],levelRange:s[1],title:s[2],goals:s[3],activities:s[4]}));
+  save();
+  toast(`已為 ${schoolName(f.schoolId)}／${gradeName(f.gradeId)} 加入20週範本`);
+}
+function copyCoursePlanFromOtherClass(){
+  const f=courseFilter();
+  const sourceOptions=[];
+  data.schools.forEach(sc=>data.grades.forEach(gr=>{
+    const count=(data.coursePlans||[]).filter(c=>c.schoolId===sc.id&&c.gradeId===gr.id).length;
+    if(count && !(sc.id===f.schoolId&&gr.id===f.gradeId)) sourceOptions.push({schoolId:sc.id,gradeId:gr.id,label:`${sc.name}／${gr.name}（${count}筆）`});
+  }));
+  if(!sourceOptions.length){toast("沒有其他班級可複製");return}
+  const msg=sourceOptions.map((o,i)=>`${i+1}. ${o.label}`).join("\n");
+  const pick=prompt("請輸入要複製的來源編號：\n"+msg);
+  const idx=parseInt(pick)-1;
+  const src=sourceOptions[idx];
+  if(!src){toast("未選擇來源");return}
+  const items=(data.coursePlans||[]).filter(c=>c.schoolId===src.schoolId&&c.gradeId===src.gradeId);
+  items.forEach(c=>data.coursePlans.push({...c,id:uid(),schoolId:f.schoolId,gradeId:f.gradeId}));
+  save();
+  toast("已複製課程到目前班級");
+}
+function renderCoursePlans(){
+  const box=document.getElementById("coursePlanList"); if(!box)return;
+  const f=courseFilter();
+  const schoolSel=document.getElementById("courseFilterSchool");
+  const gradeSel=document.getElementById("courseFilterGrade");
+  const courseSchool=document.getElementById("courseSchool");
+  const courseGrade=document.getElementById("courseGrade");
+  if(schoolSel) schoolSel.innerHTML=optionHTML(data.schools,f.schoolId);
+  if(gradeSel) gradeSel.innerHTML=optionHTML(data.grades,f.gradeId);
+  if(courseSchool) courseSchool.innerHTML=optionHTML(data.schools,f.schoolId);
+  if(courseGrade) courseGrade.innerHTML=optionHTML(data.grades,f.gradeId);
+
+  const plans=filteredCoursePlans();
+  const title=document.getElementById("courseListTitle");
+  if(title) title.textContent=`全年課程列表｜${schoolName(f.schoolId)}／${gradeName(f.gradeId)}`;
+  const count=document.getElementById("courseCount");
+  if(count) count.textContent=plans.length;
+
+  box.innerHTML=plans.map(c=>`<div class="course-card" onclick="editCoursePlan('${c.id}')">
+    <div class="course-title">${escapeAttr(c.week)}｜${escapeAttr(c.title)}</div>
+    <div class="course-meta">${schoolName(c.schoolId)}｜${gradeName(c.gradeId)}｜${escapeAttr(c.levelRange||"未設定等級")}</div>
+    <div class="course-body"><b>目標：</b>\n${escapeAttr(c.goals||"")}</div>
+    <div class="course-body"><b>活動：</b>\n${escapeAttr(c.activities||"")}</div>
+  </div>`).join("") || `<p class="small">目前這個學校／年級還沒有課程總覽。可按「為目前班級產生20週範本」。</p>`;
+}
+
+function migrateCoursePlans(){
+  data.coursePlans=data.coursePlans||[];
+  const defaultSchool=data.courseFilter?.schoolId||data.filter?.schoolId||data.schools?.[0]?.id;
+  const defaultGrade=data.courseFilter?.gradeId||data.filter?.gradeId||data.grades?.[0]?.id;
+  data.coursePlans.forEach(c=>{
+    if(!c.schoolId)c.schoolId=defaultSchool;
+    if(!c.gradeId)c.gradeId=defaultGrade;
+  });
+}
+
+function renderTeachingTools(){
+  migrateCoursePlans();
+  ensureTeachingData();
+  renderTeachingSelects();
+  renderCalendar();
+  renderLessonLogs();
+  renderCoursePlans();
+}
+
+function render(){document.getElementById("newLevel").max=maxLevel();renderSelects();renderList();renderStats();renderRank();renderManage();renderLevelsManage();renderEditor();renderOverview();renderTeachingTools()}
+render();
+loadCloudConfigToForm();
+connectCloud(false);
+</script>
+</body>
+</html>
